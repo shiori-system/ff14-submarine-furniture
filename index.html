@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FF14 潜水艦 家具・調度品 逆引きマケボ価格</title>
+<!-- 公式 Lodestone ツールチップ ウィジェット -->
+<script>
+// lodestone tooltip を body 末尾でロード（DOMReady後に初期化される）
+window.addEventListener('DOMContentLoaded', function() {
+  var s = document.createElement('script');
+  s.src = 'https://lds-img.finalfantasyxiv.com/pc/global/js/eorzeadb/loader.js?v3';
+  document.body.appendChild(s);
+});
+</script>
 <style>
 :root {
   --bg:#fdf8f0; --bg2:#f5ede0; --border:#d4c4a8; --gold2:#9c6e14;
@@ -36,6 +45,9 @@ tr:hover td{background:rgba(200,152,48,.13);}
 td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:middle;}
 .item-link{color:var(--gold2);font-weight:600;cursor:pointer;border-bottom:1px dashed var(--accent);}
 .item-link:hover{color:#7a3800;}
+/* 公式 Lodestone tooltip リンク */
+a.eorzeadb_link.item-link-lode{color:var(--gold2);font-weight:600;text-decoration:none;border-bottom:1px solid var(--accent);}
+a.eorzeadb_link.item-link-lode:hover{color:#7a3800;}
 
 /* ===================== Lodestoneスタイル ツールチップ ===================== */
 #lode-popup{
@@ -224,9 +236,9 @@ async function loadDesc(item){
   if(pending.has(item.id)||descs[item.id]!==undefined) return;
   pending.add(item.id);
   try{
-    const res=await fetch(`https://xivapi.com/Item/${item.id}?columns=Description&language=ja`);
+    const res=await fetch(`https://xivapi.com/item/${item.id}?columns=Description_ja`);
     const d=await res.json();
-    descs[item.id]=(d.Description||"").replace(/<[^>]+>/g,"").trim()||null;
+    descs[item.id]=(d.Description_ja||"").replace(/<[^>]+>/g,"").trim()||null;
   }catch{descs[item.id]=null;}
   if(activeId===item.id){
     const el=document.getElementById("tt-desc");
@@ -318,14 +330,21 @@ function render(){
   tbody.innerHTML=items.map(item=>{
     const mr=Math.min(...item.routes.map(r=>r.rank));
     const seas=[...new Set(item.routes.map(r=>r.sea))].map(s=>`<span class="sea-badge">${s}</span>`).join("");
+    // lod があれば公式 eorzeadb_link（loader.js がホバーで本物のツールチップを表示）
+    // なければカスタムポップアップ用 span
+    const nameCell=item.lod
+      ? `<a href="https://jp.finalfantasyxiv.com/lodestone/playguide/db/item/${item.lod}/"
+            class="eorzeadb_link item-link-lode">${item.name}</a>`
+      : `<span class="item-link" data-id="${item.id}">${item.name}</span>`;
     return`<tr>
-      <td><span class="item-link" data-id="${item.id}">${item.name}</span></td>
+      <td>${nameCell}</td>
       <td><span class="cat-badge ${catClass(item.cat)}">${item.cat}</span></td>
       <td>${seas}</td>
       <td class="rank-col">Rank ${mr}+</td>
       <td class="price-cell">${priceHtml(item.id)}</td>
     </tr>`;
   }).join("");
+  // lod なしのみカスタムポップアップをバインド
   tbody.querySelectorAll(".item-link").forEach(el=>{
     el.addEventListener("click",e=>{
       e.stopPropagation();
