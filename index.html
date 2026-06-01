@@ -341,12 +341,12 @@ a.eorzeadb_link.item-link-lode:hover{color:#7a3800;}
     <thead>
       <tr>
         <th data-col="category">カテゴリー <span class="si">↕</span></th>
-        <th data-col="name">家具名 <span class="si">↑</span></th>
+        <th data-col="name">家具名 <span class="si">↕</span></th>
         <th data-col="sea">入手海域 <span class="si">↕</span></th>
         <th data-col="zone">航路 <span class="si">↕</span></th>
         <th data-col="exp">探査 <span class="si">↕</span></th>
         <th data-col="rank">ランク <span class="si">↕</span></th>
-        <th data-col="price" class="price-cell">マケボ最安値 <span class="si">↕</span></th>
+        <th data-col="price" class="price-cell">マケボ最安値 <span class="si">↓</span></th>
       </tr>
     </thead>
     <tbody id="tbody"></tbody>
@@ -363,8 +363,8 @@ a.eorzeadb_link.item-link-lode:hover{color:#7a3800;}
 <script>
 let ITEMS = [];
 let prices = {};
-let sortCol = "name";
-let sortDir = "asc";
+let sortCol = "price";
+let sortDir = "desc";
 let filterSea = "all";
 let filterCat = "all";
 let searchText = "";
