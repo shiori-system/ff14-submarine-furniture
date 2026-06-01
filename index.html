@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FF14 潜水艦 家具・調度品 逆引きマケボ価格</title>
-<!-- 公式 Lodestone ツールチップ ウィジェット -->
-
 <style>
 :root {
   --bg:#fdf8f0; --bg2:#f5ede0; --border:#d4c4a8; --gold2:#9c6e14;
@@ -36,11 +34,8 @@ th .si{margin-left:4px;color:#c0a060;font-size:11px;}
 tr:nth-child(even) td{background:rgba(200,152,48,.06);}
 tr:hover td{background:rgba(200,152,48,.13);}
 td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:middle;}
-.item-link{color:var(--gold2);font-weight:600;cursor:pointer;border-bottom:1px dashed var(--accent);}
+.item-link{color:var(--gold2);font-weight:600;cursor:pointer;border-bottom:1px dashed var(--accent);text-decoration:none;}
 .item-link:hover{color:#7a3800;}
-/* 公式 Lodestone tooltip リンク */
-a.eorzeadb_link.item-link-lode{color:var(--gold2);font-weight:600;text-decoration:none;border-bottom:1px solid var(--accent);}
-a.eorzeadb_link.item-link-lode:hover{color:#7a3800;}
 
 /* ===================== Lodestoneスタイル ツールチップ ===================== */
 #lode-popup{
@@ -88,6 +83,10 @@ a.eorzeadb_link.item-link-lode:hover{color:#7a3800;}
 .sea-badge{display:inline-block;padding:2px 6px;border-radius:3px;font-size:11px;background:#f0e8d8;color:var(--text2);border:1px solid #d0b890;margin:1px;}
 .rank-col{color:var(--text2);font-size:12px;}
 .price-cell{text-align:right;min-width:120px;}
+.name-col{min-width:220px;}
+.zone-col{min-width:190px;}
+.num-col{text-align:right;white-space:nowrap;color:var(--text2);font-size:12px;}
+
 .p-load{color:#a09080;font-size:12px;}
 .p-val{color:var(--green);font-weight:bold;font-size:15px;}
 .p-none{color:#a09080;font-size:12px;}
@@ -138,7 +137,7 @@ a.eorzeadb_link.item-link-lode:hover{color:#7a3800;}
 
 <header>
   <h1>⚓ FF14 潜水艦 家具・調度品 逆引きマケボ価格</h1>
-  <div class="sub">家具名をクリック → ツールチップ表示 ／ アレキサンダー鯖 リアルタイム価格（Universalis）</div>
+  <div class="sub">家具名にマウスオーバー → 公式ツールチップ表示 ／ 潜水艦航路は一覧で常時表示 ／ アレキサンダー鯖 リアルタイム価格（Universalis）</div>
 </header>
 <div class="controls">
   <input type="text" class="search-box" id="search" placeholder="🔍 家具名で検索...">
@@ -167,10 +166,12 @@ a.eorzeadb_link.item-link-lode:hover{color:#7a3800;}
 <div class="table-wrap">
   <table>
     <thead><tr>
-      <th data-col="name">家具名 <span class="si">↕</span></th>
       <th data-col="category">カテゴリー <span class="si">↕</span></th>
-      <th>入手海域</th>
-      <th data-col="minRank">最低ランク <span class="si">↕</span></th>
+      <th data-col="name">家具名 <span class="si">↕</span></th>
+      <th data-col="sea">入手海域 <span class="si">↕</span></th>
+      <th data-col="zone">航路 <span class="si">↕</span></th>
+      <th data-col="exp">探査 <span class="si">↕</span></th>
+      <th data-col="rank">ランク <span class="si">↕</span></th>
       <th data-col="price" class="price-cell">マケボ最安値 <span class="si">↓</span></th>
     </tr></thead>
     <tbody id="tbody"></tbody>
@@ -189,6 +190,39 @@ let activeId=null;
 const popup=document.getElementById("lode-popup");
 
 function icoUrl(ico){const s=String(ico).padStart(6,'0');return`https://xivapi.com/i/${s.slice(0,3)}000/${s}.png`;}
+
+function lodestoneSearchUrl(item){
+  const q=encodeURIComponent(item.name);
+  return `https://jp.finalfantasyxiv.com/lodestone/playguide/db/item/?q=${q}`;
+}
+
+function loadOfficialTooltipScript(){
+  return new Promise((resolve,reject)=>{
+    if(document.querySelector('script[data-eorzeadb-loader]')) return resolve();
+    const sc=document.createElement('script');
+    sc.src='https://lds-img.finalfantasyxiv.com/pc/global/js/eorzeadb/loader.js?v3';
+    sc.async=true;
+    sc.dataset.eorzeadbLoader='1';
+    sc.onload=resolve;
+    sc.onerror=reject;
+    document.body.appendChild(sc);
+  });
+}
+
+async function enrichLodestoneUrls(){
+  await Promise.all(ITEMS.map(async item=>{
+    if(item.lodestone) return;
+    try{
+      const res=await fetch(`https://xivapi.com/Item/${item.id}?columns=Url&language=ja`);
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const d=await res.json();
+      if(d.Url) item.lodestone = `https://jp.finalfantasyxiv.com${d.Url}`;
+    }catch(e){
+      item.lodestone = lodestoneSearchUrl(item);
+      console.warn('Lodestone URL取得失敗:', item.id, item.name, e);
+    }
+  }));
+}
 
 /* ---------- JSON読み込み ---------- */
 async function loadData(){
@@ -229,9 +263,9 @@ async function loadDesc(item){
   if(pending.has(item.id)||descs[item.id]!==undefined) return;
   pending.add(item.id);
   try{
-    const res=await fetch(`https://xivapi.com/item/${item.id}?columns=Description_ja`);
+    const res=await fetch(`https://xivapi.com/Item/${item.id}?columns=Description&language=ja`);
     const d=await res.json();
-    descs[item.id]=(d.Description_ja||"").replace(/<[^>]+>/g,"").trim()||null;
+    descs[item.id]=(d.Description||"").replace(/<[^>]+>/g,"").trim()||null;
   }catch{descs[item.id]=null;}
   if(activeId===item.id){
     const el=document.getElementById("tt-desc");
@@ -300,40 +334,45 @@ function priceHtml(id){
   return`<span class="p-val">${p.toLocaleString("ja-JP")}</span><span class="p-g">G</span>`;
 }
 function getFiltered(){
-  return ITEMS.filter(i=>{
-    if(filterSea!=="all"&&!i.routes.some(r=>r.sea===filterSea)) return false;
-    if(filterCat!=="all"&&i.cat!==filterCat) return false;
-    if(searchText&&!i.name.includes(searchText)) return false;
-    return true;
-  }).sort((a,b)=>{
+  const rows=[];
+  ITEMS.forEach(item=>{
+    item.routes.forEach(route=>{
+      if(filterSea!=="all"&&route.sea!==filterSea) return;
+      if(filterCat!=="all"&&item.cat!==filterCat) return;
+      if(searchText&&!item.name.includes(searchText)) return;
+      rows.push({item,route});
+    });
+  });
+  return rows.sort((a,b)=>{
     let va,vb;
-    if(sortCol==="price")    {va=prices[a.id]??-1;vb=prices[b.id]??-1;}
-    else if(sortCol==="name")     {va=a.name;vb=b.name;}
-    else if(sortCol==="category") {va=a.cat; vb=b.cat;}
-    else if(sortCol==="minRank")  {va=Math.min(...a.routes.map(r=>r.rank));vb=Math.min(...b.routes.map(r=>r.rank));}
+    if(sortCol==="price")    {va=prices[a.item.id]??-1;vb=prices[b.item.id]??-1;}
+    else if(sortCol==="category") {va=a.item.cat; vb=b.item.cat;}
+    else if(sortCol==="name")     {va=a.item.name;vb=b.item.name;}
+    else if(sortCol==="sea")      {va=a.route.sea;vb=b.route.sea;}
+    else if(sortCol==="zone")     {va=a.route.zone;vb=b.route.zone;}
+    else if(sortCol==="exp")      {va=a.route.exp;vb=b.route.exp;}
+    else if(sortCol==="rank")     {va=a.route.rank;vb=b.route.rank;}
     else return 0;
     return(va<vb?-1:va>vb?1:0)*(sortDir==="asc"?1:-1);
   });
 }
 function render(){
-  const items=getFiltered();
+  const rows=getFiltered();
   const tbody=document.getElementById("tbody");
-  document.getElementById("nores").style.display=items.length?"none":"";
-  document.getElementById("cnt").textContent=items.length;
-  tbody.innerHTML=items.map(item=>{
-    const mr=Math.min(...item.routes.map(r=>r.rank));
-    const seas=[...new Set(item.routes.map(r=>r.sea))].map(s=>`<span class="sea-badge">${s}</span>`).join("");
-    // lod があれば公式 eorzeadb_link（loader.js がホバーで本物のツールチップを表示）
-    // なければカスタムポップアップ用 span
+  document.getElementById("nores").style.display=rows.length?"none":"";
+  document.getElementById("cnt").textContent=rows.length;
+  tbody.innerHTML=rows.map(({item,route})=>{
     const nameCell=item.lod
       ? `<a href="https://jp.finalfantasyxiv.com/lodestone/playguide/db/item/${item.lod}/"
             class="eorzeadb_link item-link-lode">${item.name}</a>`
       : `<span class="item-link" data-id="${item.id}">${item.name}</span>`;
     return`<tr>
-      <td>${nameCell}</td>
       <td><span class="cat-badge ${catClass(item.cat)}">${item.cat}</span></td>
-      <td>${seas}</td>
-      <td class="rank-col">Rank ${mr}+</td>
+      <td class="name-col">${nameCell}</td>
+      <td><span class="sea-badge">${route.sea}</span></td>
+      <td class="zone-col">${route.zone}</td>
+      <td class="num-col">探査${route.exp}+</td>
+      <td class="num-col">Rank ${route.rank}+</td>
       <td class="price-cell">${priceHtml(item.id)}</td>
     </tr>`;
   }).join("");
@@ -377,7 +416,9 @@ document.querySelector("thead").addEventListener("click",e=>{
 (async()=>{
   try{
     await loadData();
+    await enrichLodestoneUrls();
     render();
+    await loadOfficialTooltipScript();
     await fetchPrices();
   }catch(e){
     document.getElementById("pstat").textContent="読み込み失敗: "+e.message;
@@ -386,6 +427,6 @@ document.querySelector("thead").addEventListener("click",e=>{
   }
 })();
 </script>
-  <script src="https://lds-img.finalfantasyxiv.com/pc/global/js/eorzeadb/loader.js?v3"></script>
+<script src="https://lds-img.finalfantasyxiv.com/pc/global/js/eorzeadb/loader.js?v3"></script>
 </body>
 </html>
