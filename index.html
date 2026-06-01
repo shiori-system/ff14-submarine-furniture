@@ -224,9 +224,9 @@ async function loadDesc(item){
   if(pending.has(item.id)||descs[item.id]!==undefined) return;
   pending.add(item.id);
   try{
-    const res=await fetch(`https://xivapi.com/item/${item.id}?columns=Description_ja`);
+    const res=await fetch(`https://xivapi.com/Item/${item.id}?columns=Description&language=ja`);
     const d=await res.json();
-    descs[item.id]=(d.Description_ja||"").replace(/<[^>]+>/g,"").trim()||null;
+    descs[item.id]=(d.Description||"").replace(/<[^>]+>/g,"").trim()||null;
   }catch{descs[item.id]=null;}
   if(activeId===item.id){
     const el=document.getElementById("tt-desc");
