@@ -235,11 +235,60 @@ a.eorzeadb_link.item-link-lode:hover{color:#7a3800;}
 @keyframes spin{to{transform:rotate(360deg)}}
 .ov-text{color:#f0d060;font-size:14px;}
 @media (max-width: 760px){
-  .control-label{width:100%;}
-  .search-box{width:100%;}
-  .server-info{margin-left:0;width:100%;justify-content:flex-start;}
-  table{font-size:12px;}
-  td,th{padding:7px 8px;}
+ .table-wrap{
+    overflow-x:visible;
+    padding:10px;
+  }
+
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr{
+    display:block;
+  }
+
+  thead{
+    display:none;
+  }
+
+  tr{
+    margin-bottom:12px;
+    border:1px solid #d4c4a8;
+    border-radius:8px;
+    background:#fff;
+    padding:10px;
+  }
+
+  td{
+    border:none;
+    padding:4px 0;
+  }
+
+  td::before{
+    font-weight:bold;
+    color:#7a6040;
+    display:inline-block;
+    width:90px;
+  }
+
+  td:nth-child(1)::before{content:"カテゴリ";}
+  td:nth-child(2)::before{content:"家具";}
+  td:nth-child(3)::before{content:"海域";}
+  td:nth-child(4)::before{content:"航路";}
+  td:nth-child(5)::before{content:"探査";}
+  td:nth-child(6)::before{content:"Rank";}
+  td:nth-child(7)::before{content:"価格";}
+
+  .price-cell{
+    text-align:left;
+  }
+
+  .same{
+    display:none;
+  }
+}
 }
 </style>
 </head>
