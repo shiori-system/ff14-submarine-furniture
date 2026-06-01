@@ -14,7 +14,12 @@ body{font-family:'Yu Gothic UI','Meiryo UI','Segoe UI',sans-serif;background:var
 header{background:linear-gradient(135deg,#3a2808,#5a3c10 50%,#3a2808);border-bottom:3px solid var(--accent);padding:14px 24px;}
 header h1{font-size:20px;color:#f0d890;letter-spacing:.06em;}
 header .sub{color:#c0a860;font-size:12px;margin-top:3px;}
-.controls{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+.controls{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;flex-direction:column;gap:8px;align-items:stretch;}
+.control-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+.control-row.filters{padding-left:0;}
+.control-label{font-size:12px;font-weight:bold;color:var(--text2);min-width:72px;}
+.control-row.top .server-info{margin-left:auto;}
+.control-row.filters .filter-group{flex:1;}
 .search-box{background:#fff;border:1px solid var(--border);border-radius:6px;padding:5px 12px;color:var(--text);font-size:14px;width:200px;outline:none;transition:border-color .2s;}
 .search-box:focus{border-color:var(--gold2);}
 .filter-group{display:flex;gap:5px;flex-wrap:wrap;}
@@ -86,6 +91,11 @@ td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:middle;
 .name-col{min-width:220px;}
 .zone-col{min-width:190px;}
 .num-col{text-align:right;white-space:nowrap;color:var(--text2);font-size:12px;}
+.group-start td{border-top:2px solid rgba(156,110,20,.28);}
+.group-continue td{background:rgba(200,152,48,.035);}
+.group-continue .route-cell{position:relative;padding-left:24px;}
+.group-continue .route-cell::before{content:'↳';position:absolute;left:8px;color:#b08a44;font-weight:bold;}
+.muted-repeat{color:#b8a88c;font-size:11px;}
 
 .p-load{color:#a09080;font-size:12px;}
 .p-val{color:var(--green);font-weight:bold;font-size:15px;}
@@ -140,27 +150,35 @@ td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:middle;
   <div class="sub">家具名にマウスオーバー → 公式ツールチップ表示 ／ 潜水艦航路は一覧で常時表示 ／ アレキサンダー鯖 リアルタイム価格（Universalis）</div>
 </header>
 <div class="controls">
-  <input type="text" class="search-box" id="search" placeholder="🔍 家具名で検索...">
-  <div class="filter-group" id="sf">
-    <button class="filter-btn active" data-sea="all">全海域</button>
-    <button class="filter-btn" data-sea="灰海">灰海</button>
-    <button class="filter-btn" data-sea="翠浪海">翠浪海</button>
-    <button class="filter-btn" data-sea="セイレーン海">セイレーン海</button>
-    <button class="filter-btn" data-sea="紫礁海">紫礁海</button>
-    <button class="filter-btn" data-sea="南蒼茫洋">南蒼茫洋</button>
-    <button class="filter-btn" data-sea="北洋">北洋</button>
+  <div class="control-row top">
+    <input type="text" class="search-box" id="search" placeholder="🔍 家具名で検索...">
+    <div class="server-info">
+      <span class="server-badge">Alexander / Gaia</span>
+      <span id="upd"></span>
+      <button id="refresh-btn" onclick="fetchPrices()">🔄 価格更新</button>
+    </div>
   </div>
-  <div class="filter-group" id="cf">
-    <button class="filter-btn active" data-cat="all">すべて</button>
-    <button class="filter-btn" data-cat="調度品">調度品</button>
-    <button class="filter-btn" data-cat="卓上調度品">卓上</button>
-    <button class="filter-btn" data-cat="調度品(壁掛)">壁掛</button>
-    <button class="filter-btn" data-cat="庭具">庭具</button>
+  <div class="control-row filters">
+    <span class="control-label">入手海域</span>
+    <div class="filter-group" id="sf">
+      <button class="filter-btn active" data-sea="all">全海域</button>
+      <button class="filter-btn" data-sea="灰海">灰海</button>
+      <button class="filter-btn" data-sea="翠浪海">翠浪海</button>
+      <button class="filter-btn" data-sea="セイレーン海">セイレーン海</button>
+      <button class="filter-btn" data-sea="紫礁海">紫礁海</button>
+      <button class="filter-btn" data-sea="南蒼茫洋">南蒼茫洋</button>
+      <button class="filter-btn" data-sea="北洋">北洋</button>
+    </div>
   </div>
-  <div class="server-info">
-    <span class="server-badge">Alexander / Gaia</span>
-    <span id="upd"></span>
-    <button id="refresh-btn" onclick="fetchPrices()">🔄 価格更新</button>
+  <div class="control-row filters">
+    <span class="control-label">カテゴリー</span>
+    <div class="filter-group" id="cf">
+      <button class="filter-btn active" data-cat="all">すべて</button>
+      <button class="filter-btn" data-cat="調度品">調度品</button>
+      <button class="filter-btn" data-cat="卓上調度品">卓上</button>
+      <button class="filter-btn" data-cat="調度品(壁掛)">壁掛</button>
+      <button class="filter-btn" data-cat="庭具">庭具</button>
+    </div>
   </div>
 </div>
 <div class="table-wrap">
@@ -172,7 +190,7 @@ td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:middle;
       <th data-col="zone">航路 <span class="si">↕</span></th>
       <th data-col="exp">探査 <span class="si">↕</span></th>
       <th data-col="rank">ランク <span class="si">↕</span></th>
-      <th data-col="price" class="price-cell">マケボ最安値 <span class="si">↓</span></th>
+      <th data-col="price" class="price-cell">マケボ最安値 <span class="si">↕</span></th>
     </tr></thead>
     <tbody id="tbody"></tbody>
   </table>
@@ -185,7 +203,7 @@ td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:middle;
 
 <script>
 let ITEMS=[], prices={}, descs={}, pending=new Set();
-let sortCol="price", sortDir="desc", filterSea="all", filterCat="all", searchText="";
+let sortCol="name", sortDir="asc", filterSea="all", filterCat="all", searchText="";
 let activeId=null;
 const popup=document.getElementById("lode-popup");
 
@@ -356,26 +374,44 @@ function getFiltered(){
     return(va<vb?-1:va>vb?1:0)*(sortDir==="asc"?1:-1);
   });
 }
+function officialItemLink(item){
+  if(item.lod){
+    return `https://jp.finalfantasyxiv.com/lodestone/playguide/db/item/${item.lod}/`;
+  }
+  if(item.lodestone){
+    return item.lodestone;
+  }
+  return null;
+}
+
 function render(){
   const rows=getFiltered();
   const tbody=document.getElementById("tbody");
   document.getElementById("nores").style.display=rows.length?"none":"";
   document.getElementById("cnt").textContent=rows.length;
+
+  let prevId=null;
   tbody.innerHTML=rows.map(({item,route})=>{
-    const nameCell=item.lod
-      ? `<a href="https://jp.finalfantasyxiv.com/lodestone/playguide/db/item/${item.lod}/"
-            class="eorzeadb_link item-link-lode">${item.name}</a>`
+    const isContinue = prevId===item.id;
+    const rowClass = isContinue ? "group-continue" : "group-start";
+    prevId=item.id;
+
+    const officialUrl = officialItemLink(item);
+    const nameCell=officialUrl
+      ? `<a href="${officialUrl}" class="eorzeadb_link item-link-lode">${item.name}</a>`
       : `<span class="item-link" data-id="${item.id}">${item.name}</span>`;
-    return`<tr>
-      <td><span class="cat-badge ${catClass(item.cat)}">${item.cat}</span></td>
-      <td class="name-col">${nameCell}</td>
+
+    return`<tr class="${rowClass}">
+      <td>${isContinue ? `<span class="muted-repeat">〃</span>` : `<span class="cat-badge ${catClass(item.cat)}">${item.cat}</span>`}</td>
+      <td class="name-col">${isContinue ? `<span class="muted-repeat">同上</span>` : nameCell}</td>
       <td><span class="sea-badge">${route.sea}</span></td>
-      <td class="zone-col">${route.zone}</td>
+      <td class="zone-col route-cell">${route.zone}</td>
       <td class="num-col">探査${route.exp}+</td>
       <td class="num-col">Rank ${route.rank}+</td>
-      <td class="price-cell">${priceHtml(item.id)}</td>
+      <td class="price-cell">${isContinue ? `<span class="muted-repeat">〃</span>` : priceHtml(item.id)}</td>
     </tr>`;
   }).join("");
+
   // lod なしのみカスタムポップアップをバインド
   tbody.querySelectorAll(".item-link").forEach(el=>{
     el.addEventListener("click",e=>{
@@ -427,6 +463,5 @@ document.querySelector("thead").addEventListener("click",e=>{
   }
 })();
 </script>
-<script src="https://lds-img.finalfantasyxiv.com/pc/global/js/eorzeadb/loader.js?v3"></script>
 </body>
 </html>
