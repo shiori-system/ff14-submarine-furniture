@@ -5,221 +5,136 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FF14 潜水艦 家具・調度品 逆引きマケボ価格</title>
 <style>
-  :root {
-    --bg:     #fdf8f0;
-    --bg2:    #f5ede0;
-    --border: #d4c4a8;
-    --gold2:  #9c6e14;
-    --text:   #2c2010;
-    --text2:  #7a6040;
-    --green:  #1a6a1a;
-    --accent: #c89830;
-    --blue:   #14508a;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Yu Gothic UI','Meiryo UI','Segoe UI',sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+:root {
+  --bg:#fdf8f0; --bg2:#f5ede0; --border:#d4c4a8; --gold2:#9c6e14;
+  --text:#2c2010; --text2:#7a6040; --green:#1a6a1a; --accent:#c89830; --blue:#14508a;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Yu Gothic UI','Meiryo UI','Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+header{background:linear-gradient(135deg,#3a2808,#5a3c10 50%,#3a2808);border-bottom:3px solid var(--accent);padding:14px 24px;}
+header h1{font-size:20px;color:#f0d890;letter-spacing:.06em;}
+header .sub{color:#c0a860;font-size:12px;margin-top:3px;}
+.controls{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+.search-box{background:#fff;border:1px solid var(--border);border-radius:6px;padding:5px 12px;color:var(--text);font-size:14px;width:200px;outline:none;transition:border-color .2s;}
+.search-box:focus{border-color:var(--gold2);}
+.filter-group{display:flex;gap:5px;flex-wrap:wrap;}
+.filter-btn{background:#fff;border:1px solid var(--border);border-radius:4px;padding:4px 10px;color:var(--text2);font-size:12px;cursor:pointer;transition:all .15s;}
+.filter-btn:hover{border-color:var(--gold2);color:var(--gold2);}
+.filter-btn.active{background:var(--gold2);border-color:var(--gold2);color:#fff;font-weight:bold;}
+.server-info{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);}
+.server-badge{background:#e8f0fc;border:1px solid #7090d0;color:var(--blue);padding:2px 8px;border-radius:4px;}
+#refresh-btn{background:#fff;border:1px solid var(--gold2);color:var(--gold2);padding:4px 12px;border-radius:4px;cursor:pointer;font-size:12px;}
+#refresh-btn:hover{background:var(--gold2);color:#fff;}
+#refresh-btn:disabled{opacity:.5;cursor:not-allowed;}
+.table-wrap{overflow-x:auto;padding:12px 20px 20px;}
+table{width:100%;border-collapse:collapse;font-size:14px;}
+th{background:#3a2808;color:#f0d890;padding:9px 12px;text-align:left;border-bottom:2px solid var(--accent);white-space:nowrap;cursor:pointer;user-select:none;}
+th:hover{background:#4a3410;}
+th .si{margin-left:4px;color:#c0a060;font-size:11px;}
+tr:nth-child(even) td{background:rgba(200,152,48,.06);}
+tr:hover td{background:rgba(200,152,48,.13);}
+td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.item-link{color:var(--gold2);font-weight:600;cursor:pointer;border-bottom:1px dashed var(--accent);}
+.item-link:hover{color:#7a3800;}
 
-  header { background: linear-gradient(135deg,#3a2808,#5a3c10 50%,#3a2808); border-bottom: 3px solid var(--accent); padding: 14px 24px; }
-  header h1 { font-size: 20px; color: #f0d890; letter-spacing:.06em; }
-  header .sub { color: #c0a860; font-size: 12px; margin-top: 3px; }
+/* ===================== Lodestoneスタイル ツールチップ ===================== */
+#lode-popup{
+  display:none; position:fixed; z-index:9999; width:370px;
+  font-family:'Yu Gothic','Meiryo','MS Gothic',sans-serif;
+  background:#192030; border:1px solid #3a4a60;
+  box-shadow:0 8px 32px rgba(0,0,0,.85),0 0 0 1px #0a1020;
+  border-radius:3px; overflow:hidden;
+  color:#c8d0d8; font-size:13px; line-height:1.5;
+  pointer-events:none;
+}
+#lode-popup.show{display:block;}
+.lode-hd{background:#141c28;padding:5px 10px;display:flex;align-items:center;border-bottom:1px solid #2a3848;}
+.lode-hd-line{flex:1;height:1px;background:linear-gradient(to right,transparent,#7a6030);}
+.lode-hd-line.r{background:linear-gradient(to left,transparent,#7a6030);}
+.lode-hd-title{color:#c8a050;font-size:11px;font-weight:bold;letter-spacing:.12em;padding:0 8px;white-space:nowrap;}
+.lode-hd-diamond{color:#d4b060;}
+.lode-item-row{display:flex;align-items:center;gap:10px;padding:10px 12px 8px;background:#1e2838;border-bottom:1px solid #2a3848;}
+.lode-icon{width:40px;height:40px;border:1px solid #4a5a70;border-radius:2px;flex-shrink:0;background:#0a1020;object-fit:contain;}
+.lode-meta{flex:1;min-width:0;}
+.lode-name{color:#f0f4f8;font-size:15px;font-weight:bold;line-height:1.3;}
+.lode-cat{color:#7890a8;font-size:12px;margin-top:1px;}
+.lode-lv{background:#0e1828;border:1px solid #2a3858;color:#a0b8d0;font-size:11px;padding:2px 7px;border-radius:2px;white-space:nowrap;align-self:flex-start;}
+.lode-desc{padding:8px 12px;color:#a8b8c8;font-size:12px;line-height:1.7;border-bottom:1px solid #2a3848;min-height:24px;}
+.lode-desc.loading{color:#445060;font-style:italic;}
+.lode-btn-row{padding:7px 12px;border-bottom:1px solid #2a3848;display:flex;gap:6px;flex-wrap:wrap;pointer-events:auto;}
+.lode-btn{display:inline-flex;align-items:center;gap:4px;background:#1c2c40;border:1px solid #3a5070;color:#80b0d8;font-size:11px;padding:4px 10px;border-radius:3px;text-decoration:none;pointer-events:auto;transition:background .15s;}
+.lode-btn:hover{background:#2a3c50;color:#a0c8f0;}
+.lode-data-hd{color:#c07830;font-size:11px;font-weight:bold;letter-spacing:.1em;padding:6px 12px 4px;border-bottom:1px solid #2a3848;}
+.lode-route-group{padding:6px 12px 8px;}
+.lode-route-label{color:#8098b8;font-size:11px;font-weight:bold;margin-bottom:4px;}
+.lode-route-row{display:flex;gap:6px;align-items:baseline;padding:1px 8px;font-size:12px;line-height:1.6;}
+.lode-r-sea{color:#7090b8;font-weight:600;min-width:68px;flex-shrink:0;}
+.lode-r-zone{color:#b8c8d8;flex:1;}
+.lode-r-exp{color:#607080;font-size:11px;flex-shrink:0;}
+.lode-footer{padding:5px 12px;background:#141c28;border-top:1px solid #2a3848;font-size:10px;color:#445060;}
+.lode-footer a{color:#4878a8;text-decoration:none;}
 
-  .controls { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 10px 20px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-  .search-box { background:#fff; border:1px solid var(--border); border-radius:6px; padding:5px 12px; color:var(--text); font-size:14px; width:200px; outline:none; transition:border-color .2s; }
-  .search-box:focus { border-color:var(--gold2); }
-  .filter-group { display:flex; gap:5px; flex-wrap:wrap; }
-  .filter-btn { background:#fff; border:1px solid var(--border); border-radius:4px; padding:4px 10px; color:var(--text2); font-size:12px; cursor:pointer; transition:all .15s; }
-  .filter-btn:hover { border-color:var(--gold2); color:var(--gold2); }
-  .filter-btn.active { background:var(--gold2); border-color:var(--gold2); color:#fff; font-weight:bold; }
-  .server-info { margin-left:auto; display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text2); }
-  .server-badge { background:#e8f0fc; border:1px solid #7090d0; color:var(--blue); padding:2px 8px; border-radius:4px; }
-  #refresh-btn { background:#fff; border:1px solid var(--gold2); color:var(--gold2); padding:4px 12px; border-radius:4px; cursor:pointer; font-size:12px; }
-  #refresh-btn:hover { background:var(--gold2); color:#fff; }
-  #refresh-btn:disabled { opacity:.5; cursor:not-allowed; }
-
-  .table-wrap { overflow-x:auto; padding:12px 20px 20px; }
-  table { width:100%; border-collapse:collapse; font-size:14px; }
-  th { background:#3a2808; color:#f0d890; padding:9px 12px; text-align:left; border-bottom:2px solid var(--accent); white-space:nowrap; cursor:pointer; user-select:none; }
-  th:hover { background:#4a3410; }
-  th .si { margin-left:4px; color:#c0a060; font-size:11px; }
-  tr:nth-child(even) td { background:rgba(200,152,48,.06); }
-  tr:hover td { background:rgba(200,152,48,.13); }
-  td { padding:8px 12px; border-bottom:1px solid var(--border); vertical-align:middle; }
-
-  /* =============================================
-     Lodestone公式ツールチップ スタイル
-  ============================================= */
-  .tt-wrap { position:relative; display:inline-block; }
-  .item-link { color:var(--gold2); font-weight:600; cursor:default; border-bottom:1px dashed var(--accent); }
-
-  .lode-tt {
-    display: none;
-    position: absolute;
-    left: 0;
-    top: calc(100% + 8px);
-    z-index: 900;
-    width: 360px;
-    font-family: 'Yu Gothic','Meiryo','MS Gothic',sans-serif;
-    background: #192030;
-    border: 1px solid #3a4a60;
-    box-shadow: 0 8px 32px rgba(0,0,0,.85), 0 0 0 1px #0a1020;
-    border-radius: 3px;
-    overflow: hidden;
-    pointer-events: none;
-    color: #c8d0d8;
-    font-size: 13px;
-    line-height: 1.5;
-  }
-  .tt-wrap:hover .lode-tt { display: block; }
-
-  /* ヘッダー "THE LODESTONE" */
-  .lode-header {
-    background: #141c28;
-    padding: 6px 10px;
-    display: flex;
-    align-items: center;
-    gap: 0;
-    border-bottom: 1px solid #2a3848;
-  }
-  .lode-h-line {
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(to right, transparent, #8a7040);
-  }
-  .lode-h-line.right { background: linear-gradient(to left, transparent, #8a7040); }
-  .lode-h-title {
-    color: #c8a050;
-    font-size: 11px;
-    font-weight: bold;
-    letter-spacing: .12em;
-    padding: 0 8px;
-    white-space: nowrap;
-  }
-  .lode-h-diamond { color: #d4b060; font-size: 10px; }
-
-  /* アイテムrow */
-  .lode-item-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 12px 8px;
-    background: #1e2838;
-    border-bottom: 1px solid #2a3848;
-  }
-  .lode-icon {
-    width: 40px; height: 40px;
-    border: 1px solid #4a5a70;
-    border-radius: 2px;
-    flex-shrink: 0;
-    background: #0a1020;
-    object-fit: contain;
-  }
-  .lode-icon-ph {
-    width: 40px; height: 40px;
-    border: 1px solid #2a3848;
-    border-radius: 2px;
-    flex-shrink: 0;
-    background: #0a1020;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 22px;
-  }
-  .lode-item-meta { flex: 1; min-width: 0; }
-  .lode-item-name { color: #f0f4f8; font-size: 15px; font-weight: bold; line-height: 1.3; }
-  .lode-item-cat  { color: #7890a8; font-size: 12px; margin-top: 1px; }
-  .lode-lv {
-    background: #0e1828;
-    border: 1px solid #2a3858;
-    color: #a0b8d0;
-    font-size: 11px;
-    padding: 2px 6px;
-    border-radius: 2px;
-    white-space: nowrap;
-    align-self: flex-start;
-  }
-
-  /* 説明文 */
-  .lode-desc {
-    padding: 8px 12px;
-    color: #a8b8c8;
-    font-size: 12px;
-    line-height: 1.7;
-    border-bottom: 1px solid #2a3848;
-    min-height: 28px;
-  }
-  .lode-desc.loading { color: #50607a; font-style: italic; }
-
-  /* DATA セクション */
-  .lode-data-section {
-    padding: 6px 0 0;
-  }
-  .lode-data-header {
-    color: #c07830;
-    font-size: 11px;
-    font-weight: bold;
-    letter-spacing: .1em;
-    padding: 4px 12px 4px;
-    border-bottom: 1px solid #2a3848;
-  }
-  .lode-route-group { padding: 6px 12px 2px; }
-  .lode-route-label {
-    color: #8098b8;
-    font-size: 11px;
-    font-weight: bold;
-    margin-bottom: 3px;
-  }
-  .lode-route-row {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-    padding: 1px 8px;
-    font-size: 12px;
-    line-height: 1.6;
-  }
-  .lode-r-sea  { color: #7090b8; font-weight: 600; min-width: 68px; flex-shrink: 0; }
-  .lode-r-zone { color: #b8c8d8; flex: 1; }
-  .lode-r-exp  { color: #607080; font-size: 11px; flex-shrink: 0; }
-
-  /* フッター */
-  .lode-footer {
-    padding: 6px 12px;
-    background: #141c28;
-    border-top: 1px solid #2a3848;
-    font-size: 11px;
-    color: #506070;
-    margin-top: 4px;
-  }
-  .lode-footer-link { color: #4878a8; text-decoration: none; }
-
-  /* =================== */
-  .cat-badge { display:inline-block; padding:2px 7px; border-radius:3px; font-size:11px; white-space:nowrap; }
-  .c調度品   { background:#e8f5e8; color:#1a6a1a; border:1px solid #a8d8a8; }
-  .c卓上     { background:#e4f4f8; color:#0c6080; border:1px solid #90d0e0; }
-  .c壁掛     { background:#f4e8f8; color:#7020a0; border:1px solid #d090e0; }
-  .c庭具     { background:#fdf0d8; color:#804010; border:1px solid #e0b870; }
-  .sea-badge { display:inline-block; padding:2px 6px; border-radius:3px; font-size:11px; background:#f0e8d8; color:var(--text2); border:1px solid #d0b890; margin:1px; }
-  .rank-col  { color:var(--text2); font-size:12px; }
-  .price-cell { text-align:right; min-width:120px; }
-  .p-load { color:#a09080; font-size:12px; }
-  .p-val  { color:var(--green); font-weight:bold; font-size:15px; }
-  .p-none { color:#a09080; font-size:12px; }
-  .p-g    { color:#808060; font-size:11px; margin-left:1px; }
-
-  .status-bar { padding:5px 20px; font-size:12px; color:var(--text2); border-top:1px solid var(--border); display:flex; gap:16px; }
-  .no-results { text-align:center; padding:40px; color:var(--text2); font-size:14px; }
-  #ov { display:none; position:fixed; inset:0; background:rgba(30,20,5,.55); z-index:999; align-items:center; justify-content:center; flex-direction:column; gap:10px; }
-  #ov.show { display:flex; }
-  .spinner { width:40px; height:40px; border:3px solid #d0b870; border-top-color:transparent; border-radius:50%; animation:spin .8s linear infinite; }
-  @keyframes spin { to{transform:rotate(360deg)} }
-  .ov-text { color:#f0d060; font-size:14px; }
+/* バッジ */
+.cat-badge{display:inline-block;padding:2px 7px;border-radius:3px;font-size:11px;white-space:nowrap;}
+.c調度品{background:#e8f5e8;color:#1a6a1a;border:1px solid #a8d8a8;}
+.c卓上{background:#e4f4f8;color:#0c6080;border:1px solid #90d0e0;}
+.c壁掛{background:#f4e8f8;color:#7020a0;border:1px solid #d090e0;}
+.c庭具{background:#fdf0d8;color:#804010;border:1px solid #e0b870;}
+.sea-badge{display:inline-block;padding:2px 6px;border-radius:3px;font-size:11px;background:#f0e8d8;color:var(--text2);border:1px solid #d0b890;margin:1px;}
+.rank-col{color:var(--text2);font-size:12px;}
+.price-cell{text-align:right;min-width:120px;}
+.p-load{color:#a09080;font-size:12px;}
+.p-val{color:var(--green);font-weight:bold;font-size:15px;}
+.p-none{color:#a09080;font-size:12px;}
+.p-g{color:#808060;font-size:11px;margin-left:1px;}
+.status-bar{padding:5px 20px;font-size:12px;color:var(--text2);border-top:1px solid var(--border);display:flex;gap:16px;}
+.no-results{text-align:center;padding:40px;color:var(--text2);font-size:14px;}
+#ov{display:none;position:fixed;inset:0;background:rgba(30,20,5,.55);z-index:998;align-items:center;justify-content:center;flex-direction:column;gap:10px;}
+#ov.show{display:flex;}
+.spinner{width:40px;height:40px;border:3px solid #d0b870;border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ov-text{color:#f0d060;font-size:14px;}
 </style>
 </head>
 <body>
-<div id="ov"><div class="spinner"></div><div class="ov-text">マケボ価格を取得中...</div></div>
+<div id="ov"><div class="spinner"></div><div class="ov-text" id="ov-text">データを読み込み中...</div></div>
+
+<!-- ツールチップ（body直下 → fixed で table の overflow に邪魔されない） -->
+<div id="lode-popup">
+  <div class="lode-hd">
+    <div class="lode-hd-line"></div>
+    <div class="lode-hd-title">THE LODEST<span class="lode-hd-diamond">◆</span>NE</div>
+    <div class="lode-hd-line r"></div>
+  </div>
+  <div class="lode-item-row">
+    <img id="tt-icon" class="lode-icon" src="" alt="">
+    <div class="lode-meta">
+      <div class="lode-name" id="tt-name"></div>
+      <div class="lode-cat"  id="tt-cat"></div>
+    </div>
+    <div class="lode-lv">Lv 1</div>
+  </div>
+  <div class="lode-desc loading" id="tt-desc">説明文を読み込み中...</div>
+  <div class="lode-btn-row">
+    <a id="btn-lode"  class="lode-btn" href="#" target="_blank" rel="noopener">🔍 Lodestoneで検索</a>
+    <a id="btn-grld"  class="lode-btn" href="#" target="_blank" rel="noopener">📖 Garland Tools</a>
+    <a id="btn-univ"  class="lode-btn" href="#" target="_blank" rel="noopener">📊 マケボ履歴</a>
+  </div>
+  <div class="lode-data-hd">DATA</div>
+  <div class="lode-route-group">
+    <div class="lode-route-label">⚓ 入手できる潜水艦航路</div>
+    <div id="tt-routes"></div>
+  </div>
+  <div class="lode-footer">
+    Powered by <a href="https://jp.finalfantasyxiv.com/lodestone/" target="_blank" rel="noopener">FINAL FANTASY XIV, The Lodestone</a>
+    &nbsp;© SQUARE ENIX
+  </div>
+</div>
 
 <header>
   <h1>⚓ FF14 潜水艦 家具・調度品 逆引きマケボ価格</h1>
-  <div class="sub">調度品名 → 入手できる航路を確認 ／ アレキサンダー鯖 リアルタイム価格（Universalis）</div>
+  <div class="sub">家具名をクリック → ツールチップ表示 ／ アレキサンダー鯖 リアルタイム価格（Universalis）</div>
 </header>
-
 <div class="controls">
   <input type="text" class="search-box" id="search" placeholder="🔍 家具名で検索...">
   <div class="filter-group" id="sf">
@@ -244,18 +159,15 @@
     <button id="refresh-btn" onclick="fetchPrices()">🔄 価格更新</button>
   </div>
 </div>
-
 <div class="table-wrap">
   <table>
-    <thead>
-      <tr>
-        <th data-col="name">家具名 <span class="si">↕</span></th>
-        <th data-col="category">カテゴリー <span class="si">↕</span></th>
-        <th>入手海域</th>
-        <th data-col="minRank">最低ランク <span class="si">↕</span></th>
-        <th data-col="price" class="price-cell">マケボ最安値 <span class="si">↓</span></th>
-      </tr>
-    </thead>
+    <thead><tr>
+      <th data-col="name">家具名 <span class="si">↕</span></th>
+      <th data-col="category">カテゴリー <span class="si">↕</span></th>
+      <th>入手海域</th>
+      <th data-col="minRank">最低ランク <span class="si">↕</span></th>
+      <th data-col="price" class="price-cell">マケボ最安値 <span class="si">↓</span></th>
+    </tr></thead>
     <tbody id="tbody"></tbody>
   </table>
   <div class="no-results" id="nores" style="display:none">該当する家具が見つかりません</div>
@@ -266,175 +178,40 @@
 </div>
 
 <script>
-// アイコンURL生成（GarlandTools icon ID → XIVAPI CDN）
-function icoUrl(id) {
-  const s = String(id).padStart(6,'0');
-  return `https://xivapi.com/i/${s.slice(0,3)}000/${s}.png`;
+let ITEMS=[], prices={}, descs={}, pending=new Set();
+let sortCol="price", sortDir="desc", filterSea="all", filterCat="all", searchText="";
+let activeId=null;
+const popup=document.getElementById("lode-popup");
+
+function icoUrl(ico){const s=String(ico).padStart(6,'0');return`https://xivapi.com/i/${s.slice(0,3)}000/${s}.png`;}
+
+/* ---------- JSON読み込み ---------- */
+async function loadData(){
+  const res=await fetch('items.json');
+  const json=await res.json();
+  ITEMS=json.items;
 }
 
-// ============================================================
-// アイテムデータ（id=Universalis ID, ico=GarlandTools c値）
-// ============================================================
-const ITEMS = [
-  // 灰海 (Rank 50+)
-  {id:27293,ico:53301,name:"アンティークポットセット",    cat:"調度品",
-   routes:[{sea:"灰海",zone:"J 神父の岩窟",exp:175,rank:50},
-           {sea:"灰海",zone:"O 密輸業者の取引場",exp:185,rank:50},
-           {sea:"灰海",zone:"R 走錨海域",exp:185,rank:50}]},
-  {id:28136,ico:53326,name:"黄金の水瓶",                 cat:"調度品",
-   routes:[{sea:"灰海",zone:"O 密輸業者の取引場",exp:185,rank:50},
-           {sea:"灰海",zone:"T ブルーホール",exp:190,rank:50}]},
-  // 翠浪海 (Rank 70+)
-  {id:31322,ico:58004,name:"紫漆塗番傘",                 cat:"調度品",
-   routes:[{sea:"翠浪海",zone:"F ロゴトゥムヘレの寝蔵",exp:195,rank:70},
-           {sea:"南蒼茫洋",zone:"G 南蒼茫洋02",exp:255,rank:120}]},
-  {id:30386,ico:53357,name:"結晶掘りの鞄",               cat:"調度品",
-   routes:[{sea:"翠浪海",zone:"H 翠浪海02",exp:195,rank:70}]},
-  {id:32205,ico:53375,name:"タンカード",                 cat:"卓上調度品",
-   routes:[{sea:"翠浪海",zone:"I 目隠し峡江",exp:195,rank:70},
-           {sea:"南蒼茫洋",zone:"E 南蒼茫洋01",exp:255,rank:120},
-           {sea:"北洋",zone:"F フェイエルの浜",exp:268,rank:135}]},
-  {id:32214,ico:51693,name:"アンティークシンク",          cat:"調度品",
-   routes:[{sea:"翠浪海",zone:"J 翠浪海03",exp:195,rank:70},
-           {sea:"南蒼茫洋",zone:"J 南蒼茫洋03",exp:260,rank:120}]},
-  {id:32248,ico:52308,name:"パークサイドツリー",           cat:"調度品",
-   routes:[{sea:"翠浪海",zone:"L タナロアの浮標",exp:200,rank:70},
-           {sea:"翠浪海",zone:"P なまくら切岸",exp:213,rank:70}]},
-  {id:32223,ico:52710,name:"ロイヤルライオン・スタチュー", cat:"調度品",
-   routes:[{sea:"翠浪海",zone:"L タナロアの浮標",exp:200,rank:70},
-           {sea:"翠浪海",zone:"O 翠浪海05",exp:195,rank:70}]},
-  // セイレーン海 (Rank 90+)
-  {id:37485,ico:58024,name:"ブルーブロッサムパラソル",    cat:"調度品",
-   routes:[{sea:"セイレーン海",zone:"F 漂流海域",exp:223,rank:90},
-           {sea:"南蒼茫洋",zone:"B 探検家の中継基地",exp:255,rank:120}]},
-  {id:38580,ico:51490,name:"リビングウォールアイビー",    cat:"調度品",
-   routes:[{sea:"セイレーン海",zone:"I アンテモエッサ海廊",exp:226,rank:90},
-           {sea:"南蒼茫洋",zone:"S 風生みの海底谷",exp:265,rank:120}]},
-  {id:38607,ico:51487,name:"ストーンステップ",            cat:"調度品",
-   routes:[{sea:"セイレーン海",zone:"K 渦紋海峡",exp:228,rank:90},
-           {sea:"南蒼茫洋",zone:"R 星削水道中部",exp:265,rank:120}]},
-  {id:38608,ico:51488,name:"ストーンロフト",              cat:"調度品",
-   routes:[{sea:"セイレーン海",zone:"L 鳥嘴湾",exp:230,rank:90},
-           {sea:"南蒼茫洋",zone:"F セントラルブルー",exp:255,rank:120},
-           {sea:"南蒼茫洋",zone:"K 鉤爪島沖合",exp:260,rank:120},
-           {sea:"南蒼茫洋",zone:"R 星削水道中部",exp:265,rank:120},
-           {sea:"北洋",zone:"B 海狼たちの港",exp:265,rank:135},
-           {sea:"北洋",zone:"H フェイエルの浜沖",exp:271,rank:135}]},
-  {id:38619,ico:52343,name:"クルザン・ブロークンタレット", cat:"調度品",
-   routes:[{sea:"セイレーン海",zone:"M 海魔の牢獄",exp:230,rank:90}]},
-  {id:39382,ico:53443,name:"チャコールアイロン",          cat:"卓上調度品",
-   routes:[{sea:"セイレーン海",zone:"N 放棄された流刑島",exp:231,rank:90}]},
-  {id:39387,ico:53444,name:"クラシックウォーターポット",  cat:"卓上調度品",
-   routes:[{sea:"セイレーン海",zone:"O ルガトの浜",exp:231,rank:90},
-           {sea:"紫礁海",zone:"C 漂鳥の浅瀬",exp:235,rank:105}]},
-  // 紫礁海 (Rank 105+)
-  {id:40638,ico:53454,name:"クラシックテーブルウェア",    cat:"卓上調度品",
-   routes:[{sea:"紫礁海",zone:"A 誘う藤棚",exp:235,rank:105},
-           {sea:"紫礁海",zone:"K 桔梗海溝南東",exp:245,rank:105}]},
-  {id:40699,ico:26108,name:"壊れたサイドテーブル",        cat:"調度品",
-   routes:[{sea:"紫礁海",zone:"B 白化した島",exp:235,rank:105},
-           {sea:"紫礁海",zone:"I 桔梗海溝南西",exp:245,rank:105},
-           {sea:"紫礁海",zone:"Q 舟弁島",exp:250,rank:105},
-           {sea:"北洋",zone:"E ハンドビルト島北東",exp:267,rank:135}]},
-  {id:40698,ico:22423,name:"苔むした大丸太",              cat:"調度品",
-   routes:[{sea:"紫礁海",zone:"C 漂鳥の浅瀬",exp:235,rank:105},
-           {sea:"紫礁海",zone:"J 花冠島",exp:245,rank:105},
-           {sea:"紫礁海",zone:"S 紫礁海05",exp:250,rank:105},
-           {sea:"北洋",zone:"F フェイエルの浜",exp:268,rank:135}]},
-  {id:40659,ico:53456,name:"ナチュラルログ・ハーフパーティション",cat:"調度品",
-   routes:[{sea:"紫礁海",zone:"D 紫礁海01",exp:240,rank:105}]},
-  {id:40381,ico:59889,name:"遮光器土偶",                  cat:"卓上調度品",
-   routes:[{sea:"紫礁海",zone:"G 紫礁海02",exp:240,rank:105}]},
-  {id:41427,ico:52384,name:"カインドフレア・ガーデンスプリンクラー",cat:"庭具",
-   routes:[{sea:"紫礁海",zone:"I 桔梗海溝南西",exp:245,rank:105},
-           {sea:"紫礁海",zone:"N 旗弁島",exp:250,rank:105}]},
-  {id:41103,ico:51532,name:"ツリートランク・ロフト",       cat:"調度品",
-   routes:[{sea:"紫礁海",zone:"J 花冠島",exp:245,rank:105},
-           {sea:"紫礁海",zone:"S 紫礁海05",exp:250,rank:105},
-           {sea:"南蒼茫洋",zone:"S 風生みの海底谷",exp:265,rank:120}]},
-  {id:41651,ico:52040,name:"アルザダール・トレジャーラグ",  cat:"調度品",
-   routes:[{sea:"紫礁海",zone:"K 桔梗海溝南東",exp:245,rank:105},
-           {sea:"紫礁海",zone:"R ドディー海底谷東",exp:250,rank:105},
-           {sea:"南蒼茫洋",zone:"O エメラルド・ディープ",exp:265,rank:120}]},
-  {id:41143,ico:53491,name:"ブルーキャップ・マッシュルームランプ",cat:"卓上調度品",
-   routes:[{sea:"紫礁海",zone:"N 旗弁島",exp:250,rank:105},
-           {sea:"南蒼茫洋",zone:"B 探検家の中継基地",exp:255,rank:120},
-           {sea:"北洋",zone:"C ハンドビルト島南端",exp:265,rank:135}]},
-  {id:41821,ico:53485,name:"プヌティーのぬいぐるみ",       cat:"卓上調度品",
-   routes:[{sea:"紫礁海",zone:"O 胡蝶の円湾",exp:250,rank:105},
-           {sea:"南蒼茫洋",zone:"C 紺色海底棚北",exp:250,rank:120}]},
-  {id:41818,ico:53478,name:"ウーパールーパーのぬいぐるみ", cat:"卓上調度品",
-   routes:[{sea:"紫礁海",zone:"P 紫礁海04",exp:250,rank:105},
-           {sea:"南蒼茫洋",zone:"F セントラルブルー",exp:255,rank:120}]},
-  {id:41820,ico:53481,name:"ドリッピーのふわふわぬいぐるみ",cat:"卓上調度品",
-   routes:[{sea:"紫礁海",zone:"S 紫礁海05",exp:250,rank:105},
-           {sea:"南蒼茫洋",zone:"A インディゴ・シャロウ",exp:250,rank:120}]},
-  // 南蒼茫洋 (Rank 120+)
-  {id:44900,ico:51741,name:"ラボラトリー・カウンター",     cat:"調度品",
-   routes:[{sea:"南蒼茫洋",zone:"D 雨生みの海底谷",exp:255,rank:120}]},
-  {id:44911,ico:51579,name:"ウェザード・ポートホール",     cat:"調度品",
-   routes:[{sea:"南蒼茫洋",zone:"E 南蒼茫洋01",exp:255,rank:120}]},
-  {id:44895,ico:52819,name:"ボルダリング・パーティション", cat:"調度品",
-   routes:[{sea:"南蒼茫洋",zone:"G 南蒼茫洋02",exp:255,rank:120},
-           {sea:"北洋",zone:"B 海狼たちの港",exp:265,rank:135}]},
-  {id:48102,ico:53710,name:"ブリックサークル",            cat:"調度品",
-   routes:[{sea:"南蒼茫洋",zone:"H 鉤爪島",exp:260,rank:120},
-           {sea:"南蒼茫洋",zone:"O エメラルド・ディープ",exp:265,rank:120}]},
-  {id:48099,ico:51154,name:"フローレセントシャンデリア",   cat:"調度品",
-   routes:[{sea:"南蒼茫洋",zone:"I セントラルブルー南",exp:260,rank:120}]},
-  {id:48131,ico:52043,name:"ラウンドステップライト",       cat:"調度品",
-   routes:[{sea:"南蒼茫洋",zone:"J 南蒼茫洋03",exp:260,rank:120}]},
-  {id:46110,ico:52844,name:"スクロールキャビネット",       cat:"調度品",
-   routes:[{sea:"南蒼茫洋",zone:"O エメラルド・ディープ",exp:265,rank:120},
-           {sea:"北洋",zone:"H フェイエルの浜沖",exp:271,rank:135}]},
-  {id:46104,ico:51588,name:"スタジオトップライト",         cat:"調度品(壁掛)",
-   routes:[{sea:"南蒼茫洋",zone:"R 星削水道中部",exp:265,rank:120},
-           {sea:"北洋",zone:"C ハンドビルト島南端",exp:265,rank:135}]},
-  // 北洋 (Rank 135+)
-  {id:49853,ico:51594,name:"ピーリング・ウォールステッカー",cat:"調度品",
-   routes:[{sea:"北洋",zone:"B 海狼たちの港",exp:265,rank:135}]},
-  {id:46089,ico:51155,name:"アイロンリーフ・シーリングライト",cat:"調度品",
-   routes:[{sea:"北洋",zone:"C ハンドビルト島南端",exp:265,rank:135}]},
-  {id:46121,ico:53734,name:"イミテーション・バトルフィールド",cat:"調度品",
-   routes:[{sea:"北洋",zone:"D ウーヤ・セイク湖",exp:267,rank:135}]},
-  {id:50831,ico:21619,name:"フォーチュンテラー・ベルベット",cat:"調度品",
-   routes:[{sea:"北洋",zone:"E ハンドビルト島北東",exp:267,rank:135}]},
-  {id:51264,ico:51937,name:"エバーキープ・ウォールマウント",cat:"調度品(壁掛)",
-   routes:[{sea:"北洋",zone:"H フェイエルの浜沖",exp:271,rank:135}]},
-  {id:51269,ico:53740,name:"ガーデン・パーティライト",     cat:"庭具",
-   routes:[{sea:"北洋",zone:"K エルスレント海溝南部",exp:275,rank:135}]},
-];
-
-// ============================================================
-// 状態
-// ============================================================
-let sortCol="price", sortDir="desc", filterSea="all", filterCat="all", searchText="";
-const prices  = {};  // id → minPrice(number) | null
-const descs   = {};  // id → string | null  (lazy XIVAPI)
-const pending = new Set();
-
-// ============================================================
-// Universalis バッチ取得（IDハードコード済、一発で取れる）
-// ============================================================
-async function fetchPrices() {
-  const btn = document.getElementById("refresh-btn");
-  btn.disabled = true; btn.textContent = "取得中...";
+/* ---------- Universalis ---------- */
+async function fetchPrices(){
+  const btn=document.getElementById("refresh-btn");
+  btn.disabled=true; btn.textContent="取得中...";
   document.getElementById("ov").classList.add("show");
-  document.getElementById("pstat").textContent = "取得中...";
-
-  const ids = ITEMS.map(i=>i.id).join(",");
-  try {
-    const res = await fetch(`https://universalis.app/api/v2/Alexander/${ids}?listings=1&entries=0`);
-    if (!res.ok) throw new Error("HTTP "+res.status);
-    const data = await res.json();
-    for (const [sid,info] of Object.entries(data.items ?? {})) {
-      prices[+sid] = (info.minPrice > 0) ? info.minPrice : null;
+  document.getElementById("ov-text").textContent="マケボ価格を取得中...";
+  document.getElementById("pstat").textContent="取得中...";
+  const ids=ITEMS.map(i=>i.id).join(",");
+  try{
+    const res=await fetch(`https://universalis.app/api/v2/Alexander/${ids}?listings=1&entries=0`);
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    const data=await res.json();
+    for(const [sid,info] of Object.entries(data.items??{})){
+      prices[+sid]=(info.minPrice>0)?info.minPrice:null;
     }
-    const got = Object.values(prices).filter(v=>v!==null).length;
-    document.getElementById("upd").textContent = `更新: ${new Date().toLocaleTimeString("ja-JP")}`;
-    document.getElementById("pstat").textContent = `取得完了 — 出品あり ${got} 件`;
-  } catch(e) {
-    document.getElementById("pstat").textContent = "エラー: " + e.message;
+    const got=Object.values(prices).filter(v=>v!==null).length;
+    document.getElementById("upd").textContent=`更新: ${new Date().toLocaleTimeString("ja-JP")}`;
+    document.getElementById("pstat").textContent=`取得完了 — 出品あり ${got} 件`;
+  }catch(e){
+    document.getElementById("pstat").textContent="エラー: "+e.message;
     console.error(e);
   }
   document.getElementById("ov").classList.remove("show");
@@ -442,134 +219,125 @@ async function fetchPrices() {
   render();
 }
 
-// ============================================================
-// XIVAPI 説明文オンデマンド取得
-// ============================================================
-async function loadDesc(item) {
-  if (pending.has(item.id) || descs[item.id]!==undefined) return;
+/* ---------- XIVAPI 説明文 ---------- */
+async function loadDesc(item){
+  if(pending.has(item.id)||descs[item.id]!==undefined) return;
   pending.add(item.id);
-  try {
-    const res = await fetch(`https://xivapi.com/item/${item.id}?columns=Description_ja`);
-    if (!res.ok) { descs[item.id]=null; return; }
-    const d = await res.json();
-    descs[item.id] = (d.Description_ja||"").replace(/<[^>]+>/g,"").trim() || null;
-  } catch { descs[item.id]=null; }
-  // 表示中なら更新
-  const el = document.querySelector(`.lode-desc[data-id="${item.id}"]`);
-  if (el) {
+  try{
+    const res=await fetch(`https://xivapi.com/item/${item.id}?columns=Description_ja`);
+    const d=await res.json();
+    descs[item.id]=(d.Description_ja||"").replace(/<[^>]+>/g,"").trim()||null;
+  }catch{descs[item.id]=null;}
+  if(activeId===item.id){
+    const el=document.getElementById("tt-desc");
     el.classList.remove("loading");
-    el.textContent = descs[item.id] || "";
+    el.textContent=descs[item.id]||"";
   }
 }
 
-// ============================================================
-// ツールチップ HTML生成
-// ============================================================
-function makeTooltip(item) {
-  const iconHtml = `<img class="lode-icon" src="${icoUrl(item.ico)}" alt="" onerror="this.outerHTML='<div class=\\'lode-icon-ph\\'>🪑</div>'">`;
-  const descText = descs[item.id];
-  const descHtml = (descText !== undefined)
-    ? `<div class="lode-desc" data-id="${item.id}">${descText||""}</div>`
-    : `<div class="lode-desc loading" data-id="${item.id}">説明文を読み込み中...</div>`;
-  const routeRows = item.routes.map(r =>
+/* ---------- ツールチップ ---------- */
+function showTip(item,anchor){
+  activeId=item.id;
+  document.getElementById("tt-icon").src=icoUrl(item.ico);
+  document.getElementById("tt-name").textContent=item.name;
+  document.getElementById("tt-cat").textContent=item.cat;
+  const descEl=document.getElementById("tt-desc");
+  if(descs[item.id]!==undefined){
+    descEl.classList.remove("loading");
+    descEl.textContent=descs[item.id]||"";
+  }else{
+    descEl.classList.add("loading");
+    descEl.textContent="説明文を読み込み中...";
+    loadDesc(item);
+  }
+  const q=encodeURIComponent(item.name);
+  document.getElementById("btn-lode").href=`https://jp.finalfantasyxiv.com/lodestone/playguide/db/item/?db_search_category=item&category2=0&q=${q}`;
+  document.getElementById("btn-grld").href=`https://www.garlandtools.org/db/#item/${item.id}`;
+  document.getElementById("btn-univ").href=`https://universalis.app/market/Alexander/${item.id}`;
+  document.getElementById("tt-routes").innerHTML=item.routes.map(r=>
     `<div class="lode-route-row">
       <span class="lode-r-sea">${r.sea}</span>
       <span class="lode-r-zone">${r.zone}</span>
       <span class="lode-r-exp">探査${r.exp}+</span>
     </div>`).join("");
-  return `
-    <div class="lode-header">
-      <div class="lode-h-line"></div>
-      <div class="lode-h-title">THE LODEST<span class="lode-h-diamond">◆</span>NE</div>
-      <div class="lode-h-line right"></div>
-    </div>
-    <div class="lode-item-row">
-      ${iconHtml}
-      <div class="lode-item-meta">
-        <div class="lode-item-name">${item.name}</div>
-        <div class="lode-item-cat">${item.cat}</div>
-      </div>
-      <div class="lode-lv">Lv 1</div>
-    </div>
-    ${descHtml}
-    <div class="lode-data-section">
-      <div class="lode-data-header">DATA</div>
-      <div class="lode-route-group">
-        <div class="lode-route-label">⚓ 入手できる潜水艦航路</div>
-        ${routeRows}
-      </div>
-    </div>
-    <div class="lode-footer">
-      Powered by <a class="lode-footer-link">FINAL FANTASY XIV, The Lodestone</a><br>
-      © SQUARE ENIX
-    </div>`;
+  placeTip(anchor);
+  popup.classList.add("show");
 }
+function placeTip(anchor){
+  const rect=anchor.getBoundingClientRect();
+  const vw=window.innerWidth, vh=window.innerHeight, pw=370, mg=8;
+  let left=rect.left;
+  if(left+pw+mg>vw) left=rect.right-pw;
+  if(left<mg) left=mg;
+  let top=rect.bottom+mg;
+  const ph=popup.offsetHeight||440;
+  if(top+ph>vh-mg) top=rect.top-ph-mg;
+  if(top<mg) top=mg;
+  popup.style.left=left+"px";
+  popup.style.top=top+"px";
+}
+function hideTip(){popup.classList.remove("show");activeId=null;}
+document.addEventListener("click",e=>{
+  if(!e.target.closest(".item-link")&&!e.target.closest("#lode-popup")) hideTip();
+});
 
-// ============================================================
-// 描画
-// ============================================================
-function catClass(c) {
-  if (c==="卓上調度品") return "c卓上";
-  if (c.includes("壁掛")) return "c壁掛";
-  if (c==="庭具") return "c庭具";
+/* ---------- 描画 ---------- */
+function catClass(c){
+  if(c==="卓上調度品") return "c卓上";
+  if(c.includes("壁掛")) return "c壁掛";
+  if(c==="庭具") return "c庭具";
   return "c調度品";
 }
-function priceHtml(id) {
-  const p = prices[id];
-  if (p===undefined) return `<span class="p-load">読込中...</span>`;
-  if (p===null)      return `<span class="p-none">出品なし</span>`;
-  return `<span class="p-val">${p.toLocaleString("ja-JP")}</span><span class="p-g">G</span>`;
+function priceHtml(id){
+  const p=prices[id];
+  if(p===undefined) return`<span class="p-load">読込中...</span>`;
+  if(p===null)      return`<span class="p-none">出品なし</span>`;
+  return`<span class="p-val">${p.toLocaleString("ja-JP")}</span><span class="p-g">G</span>`;
 }
-function getFiltered() {
-  return ITEMS.filter(item => {
-    if (filterSea!=="all" && !item.routes.some(r=>r.sea===filterSea)) return false;
-    if (filterCat!=="all" && item.cat!==filterCat) return false;
-    if (searchText && !item.name.includes(searchText)) return false;
+function getFiltered(){
+  return ITEMS.filter(i=>{
+    if(filterSea!=="all"&&!i.routes.some(r=>r.sea===filterSea)) return false;
+    if(filterCat!=="all"&&i.cat!==filterCat) return false;
+    if(searchText&&!i.name.includes(searchText)) return false;
     return true;
-  }).sort((a,b) => {
+  }).sort((a,b)=>{
     let va,vb;
-    if (sortCol==="price") { va=prices[a.id]??-1; vb=prices[b.id]??-1; }
-    else if (sortCol==="name") { va=a.name; vb=b.name; }
-    else if (sortCol==="category") { va=a.cat; vb=b.cat; }
-    else if (sortCol==="minRank") {
-      va=Math.min(...a.routes.map(r=>r.rank));
-      vb=Math.min(...b.routes.map(r=>r.rank));
-    } else return 0;
-    return (va<vb?-1:va>vb?1:0) * (sortDir==="asc"?1:-1);
+    if(sortCol==="price")    {va=prices[a.id]??-1;vb=prices[b.id]??-1;}
+    else if(sortCol==="name")     {va=a.name;vb=b.name;}
+    else if(sortCol==="category") {va=a.cat; vb=b.cat;}
+    else if(sortCol==="minRank")  {va=Math.min(...a.routes.map(r=>r.rank));vb=Math.min(...b.routes.map(r=>r.rank));}
+    else return 0;
+    return(va<vb?-1:va>vb?1:0)*(sortDir==="asc"?1:-1);
   });
 }
-function render() {
-  const items = getFiltered();
-  const tbody = document.getElementById("tbody");
-  document.getElementById("nores").style.display = items.length?"none":"";
-  document.getElementById("cnt").textContent = items.length;
-  tbody.innerHTML = items.map(item => {
-    const mr = Math.min(...item.routes.map(r=>r.rank));
-    const seas = [...new Set(item.routes.map(r=>r.sea))].map(s=>`<span class="sea-badge">${s}</span>`).join("");
-    return `<tr>
-      <td>
-        <div class="tt-wrap">
-          <span class="item-link">${item.name}</span>
-          <div class="lode-tt">${makeTooltip(item)}</div>
-        </div>
-      </td>
+function render(){
+  const items=getFiltered();
+  const tbody=document.getElementById("tbody");
+  document.getElementById("nores").style.display=items.length?"none":"";
+  document.getElementById("cnt").textContent=items.length;
+  tbody.innerHTML=items.map(item=>{
+    const mr=Math.min(...item.routes.map(r=>r.rank));
+    const seas=[...new Set(item.routes.map(r=>r.sea))].map(s=>`<span class="sea-badge">${s}</span>`).join("");
+    return`<tr>
+      <td><span class="item-link" data-id="${item.id}">${item.name}</span></td>
       <td><span class="cat-badge ${catClass(item.cat)}">${item.cat}</span></td>
       <td>${seas}</td>
       <td class="rank-col">Rank ${mr}+</td>
       <td class="price-cell">${priceHtml(item.id)}</td>
     </tr>`;
   }).join("");
-
-  // ホバー時にXIVAPI説明文をオンデマンド取得
-  tbody.querySelectorAll(".tt-wrap").forEach((wrap,i) => {
-    const item = items[i];
-    wrap.addEventListener("mouseenter", () => loadDesc(item), {once:true});
+  tbody.querySelectorAll(".item-link").forEach(el=>{
+    el.addEventListener("click",e=>{
+      e.stopPropagation();
+      const item=ITEMS.find(i=>i.id===+el.dataset.id);
+      if(!item) return;
+      if(activeId===item.id){hideTip();return;}
+      showTip(item,el);
+    });
   });
 }
 
-// ============================================================
-// イベント
-// ============================================================
+/* ---------- イベント ---------- */
 document.getElementById("search").addEventListener("input",e=>{searchText=e.target.value.trim();render();});
 document.getElementById("sf").addEventListener("click",e=>{
   const b=e.target.closest("[data-sea]");if(!b)return;
@@ -593,11 +361,18 @@ document.querySelector("thead").addEventListener("click",e=>{
   render();
 });
 
-// ============================================================
-// 初期化
-// ============================================================
-render();
-fetchPrices();
+/* ---------- 初期化 ---------- */
+(async()=>{
+  try{
+    await loadData();
+    render();
+    await fetchPrices();
+  }catch(e){
+    document.getElementById("pstat").textContent="読み込み失敗: "+e.message;
+    document.getElementById("ov").classList.remove("show");
+    console.error(e);
+  }
+})();
 </script>
 </body>
 </html>
